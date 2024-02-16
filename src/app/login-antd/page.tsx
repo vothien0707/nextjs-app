@@ -9,19 +9,26 @@ export default function LoginPage() {
     password?: string;
   };
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [data, setData] = useState<FieldType>({ username: "", password: "" });
   const [isLogin, setIsLogin] = useState(false);
 
   const onFinish = (values: any) => {
-    setUsername(values.username);
-    setPassword(values.password);
+    setData(values);
     setIsLogin(true);
     alert("Login success!!!");
   };
 
   const onFinishFailed = (errorInfo: any) => {
     alert("Login fail!!!");
+  };
+
+  const handleInputChange = (name: string, value: string) => {
+    console.log(value);
+    setData((prevState: any) => ({
+      ...prevState,
+      [name]: value,
+    }));
+    console.log(data);
   };
 
   return (
@@ -41,7 +48,11 @@ export default function LoginPage() {
             { min: 8, message: "Username minimum 8 characters" },
           ]}
         >
-          <Input prefix={<UserOutlined />} placeholder="Username" />
+          <Input
+            prefix={<UserOutlined />}
+            placeholder="Username"
+            onChange={(e) => handleInputChange("username", e.target.value)}
+          />
         </Form.Item>
         <Form.Item<FieldType>
           name="password"
@@ -54,18 +65,23 @@ export default function LoginPage() {
             prefix={<LockOutlined />}
             type="password"
             placeholder="Password"
+            onChange={(e) => handleInputChange("password", e.target.value)}
           />
         </Form.Item>
         <Form.Item>
           <Button htmlType="submit">Log in</Button>
         </Form.Item>
       </Form>
-      {isLogin && (
+      {/* {isLogin && (
         <div>
-          <Typography color="#000">{`Username: ${username}`}</Typography>
-          <Typography color="#000">{`Password: ${password}`}</Typography>
+          <Typography color="#000">{`Username: ${data.username}`}</Typography>
+          <Typography color="#000">{`Password: ${data.password}`}</Typography>
         </div>
-      )}
+      )} */}
+      <div>
+        <Typography color="#000">{`Username: ${data.username}`}</Typography>
+        <Typography color="#000">{`Password: ${data.password}`}</Typography>
+      </div>
     </div>
   );
 }
