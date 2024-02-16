@@ -2,6 +2,7 @@
 import { Typography, Form, Input, Button } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import { useForm, useWatch } from "antd/lib/form/Form";
 
 export default function LoginPage() {
   type FieldType = {
@@ -9,26 +10,19 @@ export default function LoginPage() {
     password?: string;
   };
 
+  const [form] = useForm();
+
+  const username = useWatch("username", form);
+  const password = useWatch("password", form);
+
   const [data, setData] = useState<FieldType>({ username: "", password: "" });
   const [isLogin, setIsLogin] = useState(false);
 
-  const onFinish = (values: any) => {
-    setData(values);
+  const handleSubmit = () => {
+    const formData = form.getFieldsValue();
+    setData(formData);
     setIsLogin(true);
     alert("Login success!!!");
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    alert("Login fail!!!");
-  };
-
-  const handleInputChange = (name: string, value: string) => {
-    console.log(value);
-    setData((prevState: any) => ({
-      ...prevState,
-      [name]: value,
-    }));
-    console.log(data);
   };
 
   return (
@@ -36,11 +30,7 @@ export default function LoginPage() {
       <Typography style={{ fontSize: "25px", marginBottom: "15px" }}>
         Login
       </Typography>
-      <Form
-        name="normal_login"
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-      >
+      <Form form={form} onFinish={handleSubmit}>
         <Form.Item<FieldType>
           name="username"
           rules={[
@@ -48,11 +38,7 @@ export default function LoginPage() {
             { min: 8, message: "Username minimum 8 characters" },
           ]}
         >
-          <Input
-            prefix={<UserOutlined />}
-            placeholder="Username"
-            onChange={(e) => handleInputChange("username", e.target.value)}
-          />
+          <Input prefix={<UserOutlined />} placeholder="Username" />
         </Form.Item>
         <Form.Item<FieldType>
           name="password"
@@ -65,7 +51,6 @@ export default function LoginPage() {
             prefix={<LockOutlined />}
             type="password"
             placeholder="Password"
-            onChange={(e) => handleInputChange("password", e.target.value)}
           />
         </Form.Item>
         <Form.Item>
@@ -79,8 +64,8 @@ export default function LoginPage() {
         </div>
       )} */}
       <div>
-        <Typography color="#000">{`Username: ${data.username}`}</Typography>
-        <Typography color="#000">{`Password: ${data.password}`}</Typography>
+        <Typography color="#000">{`Username: ${username}`}</Typography>
+        <Typography color="#000">{`Password: ${password}`}</Typography>
       </div>
     </div>
   );
